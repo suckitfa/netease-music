@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!-- 汉字简体 -->
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #yyy {
+            padding: 50px 80px;
+            border-radius: 20px;
+            border: 2px dashed black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 200px;
+            flex-direction: column;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="yyy">
+        <button id="uploaderBtn">点击或者拖曳文件</button>
+        <p>文件不能够超过 40MB</p>
+    </div>
+    <script src="../vendors/moxie.min.js"></script>
+    <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
+    <script src="../node_modules/plupload/js/plupload.min.js"></script>
+    <script src="../node_modules/qiniu-js/dist/qiniu.min.js"></script>
+    <!-- <script>
+        // leancloud 字符串存储
+        var APP_ID = "476pEJRCeKurDGu5M9D0QJTG-gzGzoHsz";
+        var APP_KEY = "V3MqegAuorfGy2GoY2SU86Bq";
+        AV.init({
+            appId: APP_ID,
+            appKey: APP_KEY,
+            serverURL: "https://476pejrc.lc-cn-n1-shared.com"
+        });
+        // 创建一个数据库
+        const TestObject = AV.Object.extend("Playlist");
+        // 创建一个条记录
+        const testObject = new TestObject();
+
+
+        //  写入leancloud数据
+        testObject.save({
+            name: "test",
+            cover: "test",
+            creatorId: "test",
+            description: "test",
+            songs: []
+        }).then((testObject) => {
+            alert("成功！");
+        })
+    </script> -->
+    <script>
+        var uploader = qiniu.upload({
+            runtimes: "html5",
+            browse_button: "uploaderBtn",
+            // 从开启的server.js中获取 
+            buptoken_url: "shit.com:8888/uptoken",
+            domain: "http://qiniu-plupload.qinniudn.com",
+            get_new_uptoken: false,
+            max_file_size: "15mb",
+            dragdrop: true,
+            drop_element: "yyy",
+            auto_start: true,
+            // 钩子函数
+            init: {
+                "FilesAdded": function(up, files) {
+                    uploadStatus.textContent = "待添加文件";
+                },
+                "BeforeUpload": function(up, file) {
+                    uploadStatus.textContent = "开始上传文件";
+                },
+                "UploadProgress": function(up, file) {
+                    uploadStatus.textContent = "上传中";
+                },
+                "FileUploaded": function(up, file, info) {
+                    uploadStatus.textContent = "上传完毕";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
