@@ -7,30 +7,67 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理页面</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        
-        #yyy {
-            padding: 50px 80px;
-            border-radius: 20px;
-            border: 2px dashed black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 200px;
-            flex-direction: column;
-        }
-    </style>
+    <link rel="stylesheet" href="./css/default.css">
 </head>
 
 <body>
-    <div id="yyy">
-        <button id="uploaderBtn">点击或者拖曳文件</button>
-        <p>文件不能够超过 40MB</p>
+    <div class="page">
+        <aside class="siderbar">
+            <div class="newSong">
+                新建歌曲
+            </div>
+            <ul class="songList">
+                <li>歌曲1</li>
+                <li>歌曲2</li>
+                <li class="active">歌曲3</li>
+                <li>歌曲4</li>
+                <li>歌曲5</li>
+                <li>歌曲6</li>
+                <li>歌曲7</li>
+                <li>歌曲8</li>
+                <li>歌曲9</li>
+                <li>歌曲10</li>
+            </ul>
+            <div class="uploadArea">
+                <div id="uploadContainer" class="draggable">
+                    <div id="uploadButton" class="clickable">
+                        <p>点击或者拖曳文件</p>
+                        <p>文件不能够超过 40MB</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <main>
+            <form action="" class="form">
+                <div class="row">
+                    <label>
+                        歌名
+                        <input type="text">
+                    </label>
+                </div>
+                <div class="row">
+                    <label>
+                        歌手
+                        <input type="text">
+                    </label>
+                </div>
+                <div class="row">
+                    <label>
+                        外链
+                        <input type="text">
+                    </label>
+                </div>
+                <div class="row">
+                    <label>
+                        保存
+                        <input type="submit"> 
+                    </label>
+                </div>
+            </form>
+        </main>
+        <footer></footer>
     </div>
+
     <script src="../vendors/moxie.min.js"></script>
     <script src="../node_modules/leancloud-storage/dist/av-min.js"></script>
     <script src="../node_modules/plupload/js/plupload.min.js"></script>
@@ -64,19 +101,22 @@
     <script>
         var uploader = qiniu.upload({
             runtimes: "html5",
-            browse_button: "uploaderBtn",
+            browse_button: "uploadButton",
             // 从开启的server.js中获取 
-            buptoken_url: "shit.com:8888/uptoken",
-            domain: "http://qiniu-plupload.qinniudn.com",
+            buptoken_url: "http://shit.com:8888/uptoken",
+            domain: "qqb9l6mrz.hn-bkt.clouddn.com",
             get_new_uptoken: false,
-            max_file_size: "15mb",
+            max_file_size: "40mb",
             dragdrop: true,
-            drop_element: "yyy",
+            drop_element: "uploadContainer",
             auto_start: true,
             // 钩子函数
             init: {
                 "FilesAdded": function(up, files) {
                     uploadStatus.textContent = "待添加文件";
+                    plupload.each(files, function(file) {
+
+                    });
                 },
                 "BeforeUpload": function(up, file) {
                     uploadStatus.textContent = "开始上传文件";
@@ -85,7 +125,19 @@
                     uploadStatus.textContent = "上传中";
                 },
                 "FileUploaded": function(up, file, info) {
+                    // 文件上传成功之后调用函数
                     uploadStatus.textContent = "上传完毕";
+                    var domain = up.getOption("domain");
+                    var response = JSON.parse(info.response);
+                    // 获取上传后文件的外链
+                    var sourceLink = domain + "/" + encodeURIComponent(response.key);
+                    console.log(sourceLink);
+                },
+                "Error": function(up, err, errTip) {
+
+                },
+                "UploadComplete": function() {
+
                 }
             }
         });
